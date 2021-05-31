@@ -35,5 +35,4 @@ INSERT INTO player (name, id_game, score, round, throwing_order) VALUES
     ('mario', 1, 40, 4, 2);
 
 INSERT INTO game (number_of_rounds) VALUES
-    (12),
-    (10);
+    (12);

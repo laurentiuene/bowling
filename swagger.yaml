@@ -1,0 +1,334 @@
+swagger: "2.0"
+info:
+  description: "Bowling app"
+  version: "1.0.0"
+  title: "Swagger Bowling"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "bowling.swagger.io"
+basePath: "/"
+tags:
+- name: "games"
+  description: "All game operations"
+- name: "players"
+  description: "All player operations"
+schemes:
+- "https"
+- "http"
+paths:
+  /games:
+    get:
+      tags:
+      - "games"
+      summary: "Retrieve all games"
+      description: ""
+      operationId: "getAllGames"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Operation succesfull"
+  
+  /games/{id}:
+    get:
+      tags:
+      - "games"
+      summary: "Retrieve game using provided id"
+      description: ""
+      operationId: "getGame"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          type: "integer"
+          required: true
+          description: "Numeric ID of game object"
+      responses:
+        "200":
+          description: "Operation succesfull"
+        "400":
+          description: "Game with provided id not found"
+          
+    delete:
+      tags:
+      - "games"
+      summary: "Finish game with provided id"
+      description: ""
+      operationId: "endGame"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          type: "integer"
+          required: true
+          description: "Numeric ID of game object"
+      responses:
+        "200":
+          description: "Operation succesfull"
+        "400":
+          description: "Game with provided id not found"    
+    
+  /games/startGame:
+    post:
+      tags:
+      - "games"
+      summary: "Creates a new game"
+      description: "This will create a new game based on the body provided. In order to create a new game, this method will create all the players and npcs "
+      operationId: "startGame"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "GameStarter object which will be mapped to a game object"
+        required: true
+        schema:
+          $ref: "#/definitions/GameStarter"
+      responses:
+        "400":
+          description: "One of required fields not provided"
+        "200":
+          description: "Game added succesfully"
+    
+  /players:
+    get:
+      tags:
+      - "players"
+      summary: "Retrieve all players"
+      description: ""
+      operationId: "getAllPlayers"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "Operation succesfull"
+      
+  /players/{id}:
+    get:
+      tags:
+      - "players"
+      summary: "Retrieve player using provided id"
+      description: ""
+      operationId: "getPlayer"
+      produces:
+      - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          type: "integer"
+          required: true
+          description: "Numeric ID of player object"
+      responses:
+        "200":
+          description: "Operation succesfull"
+        "400":
+          description: "Player with provided id not found"
+          
+    put:
+      tags:
+      - "players"
+      summary: "Updates the players score"
+      description: "This will update the players score after every round"
+      operationId: "updateScore"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "ScoreUpdater object which contains the roundScore to add to players roundScore"
+        required: true
+        schema:
+          $ref: "#/definitions/RoundScore"
+      - in: "path"
+        name: "id"
+        type: "integer"
+        required: true
+        description: "Numeric ID of player object"
+      responses:
+        "400":
+          description: "RoundScore not provided or player with provided id not found"
+        "200":
+          description: "Player updated succesfully"
+definitions:
+  GameStarter:
+    type: "object"
+    required:
+    - "playerNames"
+    - "npcNames"
+    - "npcDifficulty"
+    - "noOfRounds"
+    properties:
+      playerNames:
+        type: "array"
+        items:
+          type: "string"
+          example: "laur"
+      npcNames:
+        type: "array"
+        items:
+          type: "string"
+          example: "NPC_1"
+      npcDifficulty:
+        type: "string"
+        description: "Difficulty for NPC players"
+        enum:
+        - "Easy"
+        - "Medium"
+        - "Hard"
+      noOfRounds:
+        type: "integer"
+        example: 10
+        
+  RoundScore:
+    type: "object"
+    required:
+    - "roundScore"
+    properties:
+      roundScore:
+        type: "integer"
+        example: 7
+        
+  Game:
+    type: "object"
+    required:
+    - "gameId"
+    - "noOfRounds"
+    - "players"
+    - "npcs"
+    properties:
+      gameId:
+        type: "integer"
+        example: 1
+      noOfRounds:
+        type: "integer"
+        example: 10
+      players:
+        type: "array"
+        items:
+          type: "string"
+          example: "laur"
+      npcs:
+        type: "array"
+        items:
+          type: "string"
+          example: "NPC_1"
+          
+  Player:
+    type: "object"
+    required:
+    - "playerId"
+    - "playerName"
+    - "score"
+    - "round"
+    - "order"
+    - "game"
+    properties:
+      playerId:
+        type: "integer"
+        example: 1
+      playerName:
+        type: "string"
+        example: "laur"
+      score:
+        type: "integer"
+        example: 25
+      round:
+        type: "integer"
+        example: 5
+      order:
+        type: "integer"
+        example: 2 
+      game:
+        type: "object"
+        required:
+        - "gameId"
+        - "noOfRounds"
+        - "players"
+        - "npcs"
+        properties:
+          gameId:
+            type: "integer"
+            example: 1
+          noOfRounds:
+            type: "integer"
+            example: 10
+          players:
+            type: "array"
+            items:
+              type: "string"
+              example: "laur"
+          npcs:
+            type: "array"
+            items:
+              type: "string"
+              example: "NPC_1"
+  
+  Npc:
+    type: "object"
+    required:
+    - "npcId"
+    - "npcName"
+    - "npcScore"
+    - "npcRound"
+    - "order"
+    - "difficulty"
+    - "game"
+    properties:
+      npcId:
+        type: "integer"
+        example: 1
+      npcName:
+        type: "string"
+        example: "laur"
+      npcScore:
+        type: "integer"
+        example: 25
+      npcRound:
+        type: "integer"
+        example: 5
+      order:
+        type: "integer"
+        example: 2 
+      difficulty:
+        type: "string"
+        enum:
+        - "Easy"
+        - "Medium"
+        - "Hard"
+      game:
+        type: "object"
+        required:
+        - "gameId"
+        - "noOfRounds"
+        - "players"
+        - "npcs"
+        properties:
+          gameId:
+            type: "integer"
+            example: 1
+          noOfRounds:
+            type: "integer"
+            example: 10
+          players:
+            type: "array"
+            items:
+              type: "string"
+              example: "laur"
+          npcs:
+            type: "array"
+            items:
+              type: "string"
+              example: "NPC_1"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
