@@ -34,7 +34,6 @@ public class GameController {
 
     @DeleteMapping("/{id}")
     public void finishGame(@PathVariable Integer id) {
-        Game game = gameService.getGameById(id);
-        gameService.deleteGameById(id);
+        gameService.endGame(id);
     }
 }

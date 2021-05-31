@@ -1,5 +1,7 @@
 package com.game.bowling.services;
 
+import com.game.bowling.exception.AnotherPlayerExpectedException;
+import com.game.bowling.exception.PlayerNotFoundException;
 import com.game.bowling.models.Game;
 import com.game.bowling.models.Npc;
 import com.game.bowling.models.Player;
@@ -24,7 +26,11 @@ public class PlayerService {
     }
 
     public Player getPlayerById(Integer id) {
-        return playerRepository.findById(id).isPresent() ? playerRepository.findById(id).get() : null;
+        if(playerRepository.findById(id).isPresent()) {
+            return playerRepository.findById(id).get();
+        }else {
+            throw new PlayerNotFoundException("Player with id " + id + " was not found!");
+        }
     }
 
     public Player createPlayer(String name, int order, Game game) {
@@ -42,7 +48,7 @@ public class PlayerService {
             playerRepository.saveAndFlush(player);
             npcService.verifyIfNpcNext(player);
         } else {
-            //TODO: throw error and catch in common exception handler
+            throw new AnotherPlayerExpectedException("It is not " + player.getPlayerName() + " turn!");
         }
     }
 

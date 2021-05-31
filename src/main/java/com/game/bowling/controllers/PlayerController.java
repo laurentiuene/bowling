@@ -1,5 +1,6 @@
 package com.game.bowling.controllers;
 
+import com.game.bowling.dtos.ScoreUpdater;
 import com.game.bowling.models.Game;
 import com.game.bowling.models.Player;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class PlayerController {
     private PlayerService playerService;
 
     @GetMapping
-    public List<Player> getAllGames() {
+    public List<Player> getAllPlayers() {
         return playerService.getAllPlayers();
     }
 
@@ -26,8 +27,8 @@ public class PlayerController {
     }
 
     @PutMapping("/{id}")
-    public void updateScoreAndRound(@PathVariable Integer id, @RequestBody Integer roundScore) {
+    public void updateScoreAndRound(@PathVariable Integer id, @RequestBody ScoreUpdater scoreUpdater) {
         Player player = playerService.getPlayerById(id);
-        playerService.updateScoreAndRound(player, roundScore);
+        playerService.updateScoreAndRound(player, scoreUpdater.getRoundScore());
     }
 }
